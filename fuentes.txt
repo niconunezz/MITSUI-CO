@@ -1,0 +1,7 @@
+paper arquitectura: https://arxiv.org/pdf/2501.09760v1
+explicacion KAN: https://www.youtube.com/watch?v=-PFIkkwWdnM
+implementacion KAN: https://github.com/Blealtan/efficient-kan/blob/master/src/efficient_kan/kan.py
+
+paper: https://arxiv.org/pdf/2402.06689v1
+paper: https://arxiv.org/pdf/2412.15448v1
+KAN: Kolmogorov-Arnold Networks : https://arxiv.org/abs/2404.19756
