@@ -1,12 +1,8 @@
 import torch
 import torch.nn.functional as F
 from torch import nn
-import matplotlib.pyplot as plt
-from tqdm import tqdm
-import time
 
 # Hyperparameters
-
 class LayerNorm(nn.Module):
     def __init__(self, ndim, bias):
         super().__init__()
@@ -19,9 +15,9 @@ class LayerNorm(nn.Module):
 class AttentionHead(nn.Module):
     def __init__(self, config):
         super().__init__()
-        self.qkv = nn.Linear(config.n_embd, config.n_embd * 3)
-        self.proj = nn.Linear(config.n_embd, config.n_embd)
-        self.n_heads = config.n_heads
+        self.qkv = nn.Linear(config.ilya.encoder.n_embd, config.ilya.encoder.n_embd * 3)
+        self.proj = nn.Linear(config.ilya.encoder.n_embd, config.ilya.encoder.n_embd)
+        self.n_heads = config.ilya.encoder.n_heads
 
     def forward(self, x):
         B, T, C = x.shape
@@ -40,10 +36,10 @@ class FeedForward(nn.Module):
     def __init__(self, config):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Linear(config.n_embd, 4 * config.n_embd),
+            nn.Linear(config.ilya.encoder.n_embd, 4 * config.ilya.encoder.n_embd),
             nn.ReLU()
         )
-        self.c_proj = nn.Linear(4 * config.n_embd, config.n_embd)
+        self.c_proj = nn.Linear(4 * config.ilya.encoder.n_embd, config.ilya.encoder.n_embd)
         self.c_proj.NANO_GPT_SCALE_INIT = 1
 
 
@@ -53,8 +49,8 @@ class FeedForward(nn.Module):
 class EncoderBlock(nn.Module):
     def __init__(self, config):
         super().__init__()
-        self.ln1 = LayerNorm(config.n_embd, True)
-        self.ln2 = LayerNorm(config.n_embd, True)
+        self.ln1 = LayerNorm(config.ilya.encoder.n_embd, True)
+        self.ln2 = LayerNorm(config.ilya.encoder.n_embd, True)
         self.attn = AttentionHead(config)
         self.ff = FeedForward(config)
 

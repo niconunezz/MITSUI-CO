@@ -1,34 +1,31 @@
 import torch
 import torch.nn.functional as F
 from torch import nn
-from encoder import EncoderBlock
-from kan import KAN
-# import matplotlib.pyplot as plt
-# from tqdm import tqdm
-import time
+from Ilya.encoder import EncoderBlock
+from Ilya.kan import KAN
 
 class Ilya(nn.Module):
     def __init__(self, config):
         super().__init__()
         self.config = config
 
-        self.init_projection = nn.Linear(config.n_features, config.n_embd)
-        self.pos_emb = nn.Embedding(config.block_size, config.n_embd)
-        self.encoders = nn.Sequential(*[EncoderBlock(config) for _ in range(config.n_blocks)])
-        self.kans = KAN(config.layers_hidden)
+        self.init_projection = nn.Linear(config.ilya.encoder.n_features, config.ilya.encoder.n_embd)
+        self.pos_emb = nn.Embedding(config.ilya.encoder.block_size, config.ilya.encoder.n_embd)
+        self.encoders = nn.Sequential(*[EncoderBlock(config) for _ in range(config.ilya.encoder.n_blocks)])
+        self.kans = KAN(config.ilya.kan.layers_hidden)
 
-        self.gru = nn.GRU(config.layers_hidden[-1], config.hidden_size, config.bigru_layers, batch_first=True)
-        self.bigru = nn.GRU(config.hidden_size, config.hidden_size, config.bigru_layers, batch_first=True, bidirectional=True)
+        self.gru = nn.GRU(config.ilya.kan.layers_hidden[-1], config.ilya.gru.hidden_size, config.ilya.gru.bigru_layers, batch_first=True)
+        self.bigru = nn.GRU(config.ilya.gru.hidden_size, config.ilya.gru.hidden_size, config.ilya.gru.bigru_layers, batch_first=True, bidirectional=True)
 
-        self.norm1 = nn.LayerNorm(config.hidden_size * 2)
+        self.norm1 = nn.LayerNorm(config.ilya.gru.hidden_size * 2)
         self.dropout1 = nn.Dropout(0.3)
 
-        self.att_mult = nn.Linear(config.block_size, config.block_size)
-        self.norm2 = nn.LayerNorm(config.hidden_size * 2)
+        self.att_mult = nn.Linear(config.ilya.encoder.block_size, config.ilya.encoder.block_size)
+        self.norm2 = nn.LayerNorm(config.ilya.gru.hidden_size * 2)
         self.dropout2 = nn.Dropout(0.3)
         self.dropout3 = nn.Dropout(0.3)
 
-        self.lm_head = nn.Linear(config.hidden_size * 2 * config.block_size, 2)
+        self.lm_head = nn.Linear(config.ilya.gru.hidden_size * 2 * config.ilya.encoder.block_size, 2)
         self.apply(self._init_weights)
 
     def _init_weights(self, m):

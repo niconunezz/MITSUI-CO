@@ -20,3 +20,10 @@ def get_data_loader(type : str, batch_size):
     train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
     return train_loader
+
+def get_test_data():
+    data = np.load(f"MITSUI/tensors/test/data.npz")
+    x_data = torch.tensor(data['x'])
+    y_data = torch.tensor(data['y'])
+
+    return x_data, y_data
