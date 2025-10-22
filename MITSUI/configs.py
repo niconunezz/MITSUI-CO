@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import torch
 import torch.nn as nn
-
+# from loss import corr_loss
 @dataclass
 class MainConfig:
     batch_size = 64
@@ -10,7 +10,7 @@ class MainConfig:
     epochs = 10
     lr = 1e-4
     weight_decay = 1e-2
-    loss_func = nn.MSELoss(reduction="mean")
+    # loss_func = corr_loss
     grad_clip = 0.5
 
 @dataclass
@@ -19,7 +19,7 @@ class TransformerConfig:
     n_embd = 384
     n_heads = 6
     n_blocks = 6
-    n_features = 95
+    n_features = 94
 
 @dataclass
 class KanConfig:
@@ -28,7 +28,7 @@ class KanConfig:
 @dataclass
 class GruConfig:
     hidden_size = 384
-    bigru_layers = 1
+    bigru_layers = 2
 
 @dataclass
 class IlyaConfigs:
