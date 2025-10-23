@@ -11,10 +11,8 @@ def get_batch_mult(batch_size, elements):
 
 def get_data_loader(type : str, batch_size):
     data = np.load(f"MITSUI/tensors/{type}/data.npz")
-    els = get_batch_mult(batch_size, len(data['x']))
-
-    x_data = torch.tensor(data['x'][:els])
-    y_data = torch.tensor(data['y'][:els])
+    x_data = torch.tensor(data['x'])
+    y_data = torch.tensor(data['y'])
     dataset = TensorDataset(x_data, y_data)
 
     train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
